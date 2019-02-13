@@ -1,10 +1,9 @@
 package cn.wemarket.redis.proxy.server;
 import cn.wemarket.redis.proxy.common.constant.NettyConstant;
 import cn.wemarket.redis.proxy.common.constant.ResponseCodeEnum;
-import cn.wemarket.redis.proxy.common.dto.ResponseResult;
 import cn.wemarket.redis.proxy.common.util.MethodInvokeMetaUtils;
 import cn.wemarket.redis.proxy.common.util.NullWritableUtils;
-import cn.wemarket.redis.proxy.common.util.ResponseResultUtil;
+import cn.wemarket.redis.proxy.common.util.ResponseMessageUtil;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -49,7 +48,7 @@ public class RequestDispatcher implements ApplicationContextAware {
                 }
                 f.addListener(ChannelFutureListener.CLOSE);
             } catch (Exception e) {
-                ResponseResult error = ResponseResultUtil.error(ResponseCodeEnum.SERVER_ERROR);
+                ResponseResult error = ResponseMessageUtil.error(ResponseCodeEnum.SERVER_ERROR);
                 f = ctx.writeAndFlush(error);
             } finally {
                 f.addListener(ChannelFutureListener.CLOSE);

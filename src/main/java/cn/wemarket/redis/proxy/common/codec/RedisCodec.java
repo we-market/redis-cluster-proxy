@@ -2,6 +2,7 @@ package cn.wemarket.redis.proxy.common.codec;
 
 import cn.wemarket.redis.proxy.common.dto.RedisDecodeState;
 import cn.wemarket.redis.proxy.common.exception.MessageParseException;
+import org.springframework.util.Assert;
 
 import java.util.Arrays;
 
@@ -14,12 +15,13 @@ import java.util.Arrays;
  * 客户端和服务器发送的命令或数据一律以 \r\n （CRLF）结尾
  * */
 public class RedisCodec {
-    public static <T extends RedisMessage> T decode(String content){
-        return null;
+    public static <T extends RedisMessage> T decode(String content) throws MessageParseException {
+        Assert.notNull(content, "content is null");
+        return decode(content.getBytes(), 0, content.length());
     }
 
     //解析redis数据类型
-    private <T extends RedisMessage> T decode(byte[] content, int start, int end) throws MessageParseException {
+    public static <T extends RedisMessage> T decode(byte[] content, int start, int end) throws MessageParseException {
         try {
             //TCP传输过程中产生的粘包问题
             RedisDecodeState redisDecodeState = new RedisDecodeState();
@@ -50,7 +52,7 @@ public class RedisCodec {
         }
     }
 
-    private <T extends RedisMessage> T decode(RedisDecodeState message) throws MessageParseException {
+    private static  <T extends RedisMessage> T decode(RedisDecodeState message) throws MessageParseException {
         if (message.getParsePos() >= message.getEndPos()){
             message.setIncomplete(true);
             return null;
@@ -217,7 +219,7 @@ public class RedisCodec {
         return sb.toString();
     }
 
-    private String readLine(RedisDecodeState message) throws MessageParseException {
+    private static String readLine(RedisDecodeState message) throws MessageParseException {
         int start = message.getParsePos();
         //循环按字节读取完整消息内容
         while (message.getParsePos() < message.getEndPos()){
@@ -248,7 +250,7 @@ public class RedisCodec {
         return null;
     }
 
-    private long readNum(RedisDecodeState message) throws MessageParseException {
+    private static long readNum(RedisDecodeState message) throws MessageParseException {
         long num = 0;
         boolean isMinus = false;
         if (message.getParsePos() >= message.getEndPos()){
@@ -298,7 +300,7 @@ public class RedisCodec {
         return num;
     }
 
-    private byte[] readBytes(RedisDecodeState message, int length) throws MessageParseException {
+    private static byte[] readBytes(RedisDecodeState message, int length) throws MessageParseException {
         //字节串起始位置+字节内容长度+"\r\n"
         if ((message.getParsePos()+length+2) > message.getEndPos()){
             message.setIncomplete(true);

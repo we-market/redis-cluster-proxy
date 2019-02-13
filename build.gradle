@@ -25,13 +25,29 @@ repositories {
 def netty = [
         "io.netty:netty-all:5.0.0.Alpha1"
 ]
+def jedis = [
+        "redis.clients:jedis:2.9.0"
+]
+
+def guava = [
+        "com.google.guava:guava:23.0"
+]
+
+def apache_httpclient = [
+        "org.apache.httpcomponents:httpclient:4.5.2"
+]
+
+def apache_commons = [
+        "org.apache.commons:commons-lang3:3.8.1"
+]
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    compile netty
-    testCompile netty
-    runtime netty
+    compile netty, jedis, guava, apache_httpclient, apache_commons
+    testCompile netty, jedis, guava, apache_httpclient, apache_commons
+    runtime netty, jedis, guava, apache_httpclient, apache_commons
 }
 
 //************bootRun***********//
